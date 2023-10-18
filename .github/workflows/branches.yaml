@@ -52,7 +52,7 @@ jobs:
           ISSUE_NUMBER: ${{ steps.check-release-note-issue.outputs.issue_number }}
           UPDATED_BODY: ${{ steps.check-release-note-issue.outputs.updated_body }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             await github.issues.update({
               owner: context.repo.owner,
