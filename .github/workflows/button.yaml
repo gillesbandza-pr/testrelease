@@ -27,6 +27,8 @@ jobs:
         --header 'Content-Type: application/json')
         response_string=$(echo "$response" | jq -c .)
         echo $response_string
+        number_of_results=$(echo "$response" | jq '. | length')
+        echo "Number of results : $number_of_results"
         echo "response=$response_string" >> $GITHUB_OUTPUT
 
     - name: Display number of results
