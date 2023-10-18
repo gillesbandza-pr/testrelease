@@ -55,7 +55,7 @@ jobs:
             });
             
       - name: Update existing issue with branch name if it exists
-        if: steps.get_issues.outputs.data.length > 0
+        if: steps.get_issues.outputs.response > 0
         run: |
           const branchName = process.env.GITHUB_REF.replace('refs/heads/', '');
           const updatedBody = `${issueBody}\n\nBranch Name Created: ${branchName}`;
@@ -65,19 +65,3 @@ jobs:
           --data '{
             "body": "UPDATED FROM GHA $branchName / "
           }')
-          
-      - name: Update issue body with branch name created
-        if: steps.get_issues.outputs.data.length > 0
-        uses: actions/github-script@v4
-        env:
-          ISSUE_NUMBER: ${{ steps.check-release-note-issue.outputs.issue_number }}
-          UPDATED_BODY: ${{ steps.check-release-note-issue.outputs.updated_body }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            await github.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: parseInt(process.env.ISSUE_NUMBER),
-              body: process.env.UPDATED_BODY
-            });
