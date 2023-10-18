@@ -15,8 +15,7 @@ jobs:
             count = 0;
             const opts = github.rest.issues.listForRepo.endpoint.merge({
               owner: context.repo.owner,
-              repo: context.repo.name,
-              labels: ["RELEASE_NOTE"]
+              repo: context.repo.name
             })
             const issues = await github.paginate(opts);
             for (const issue of issues) {
