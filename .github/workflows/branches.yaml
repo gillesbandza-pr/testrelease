@@ -30,10 +30,13 @@ jobs:
           echo "Premier résultat : $first_result"
           number_of_first_result=$(echo "$first_result" | jq '.number')
           echo "Number du premier résultat : $number_of_first_result"
+          body_of_first_result=$(echo "$first_result" | jq '.body')
+          echo "Number du premier résultat : $body_of_first_result"
           number_of_results=$(echo "$response" | jq '. | length')
           echo "Number of results : $number_of_results"
           echo "response=$number_of_results" >> $GITHUB_OUTPUT
           echo "issue_number=$number_of_first_result" >> $GITHUB_OUTPUT
+          echo "issue_body=$body_of_first_result" >> $GITHUB_OUTPUT
           
       - name: Display number of issues found
         run: |
@@ -59,10 +62,10 @@ jobs:
         run: |
           branch_name=${GITHUB_REF##refs/heads/}
           echo $branch_name
-          response=$(curl --location --request PATCH 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues/14' \
+          response=$(curl --location --request PATCH 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues/${{ steps.get_issues.outputs.issue_number }}' \
           --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
           --header 'Content-Type: text/plain' \
           --data '{
-            "body": "UPDATED FROM GHA - Branch: '$branch_name' / "
+            "body": "'${{ steps.get_issues.outputs.issue_number }}' UPDATED FROM GHA - Branch: '$branch_name' / "
           }')
 
