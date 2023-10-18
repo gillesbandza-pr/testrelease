@@ -48,7 +48,11 @@ jobs:
       - name: Update issue body with branch name created
         if: steps.get_issues.outputs.data.length > 0
         uses: actions/github-script@v4
+        env:
+          ISSUE_NUMBER: ${{ steps.check-release-note-issue.outputs.issue_number }}
+          UPDATED_BODY: ${{ steps.check-release-note-issue.outputs.updated_body }}
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             await github.issues.update({
               owner: context.repo.owner,
@@ -56,7 +60,4 @@ jobs:
               issue_number: parseInt(process.env.ISSUE_NUMBER),
               body: process.env.UPDATED_BODY
             });
-          env:
-            ISSUE_NUMBER: ${{ steps.check-release-note-issue.outputs.issue_number }}
-            UPDATED_BODY: ${{ steps.check-release-note-issue.outputs.updated_body }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          
