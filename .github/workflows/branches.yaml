@@ -63,6 +63,6 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
           --header 'Content-Type: text/plain' \
           --data '{
-            "body": "UPDATED FROM GHA $branch_name / "
+            "body": "UPDATED FROM GHA echo $branch_name / "
           }')
 
