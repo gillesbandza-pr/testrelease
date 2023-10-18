@@ -57,12 +57,14 @@ jobs:
       - name: Update existing issue with branch name if it exists
         if: steps.get_issues.outputs.data.length > 0
         run: |
-          const issueNumber = steps.get_issues.outputs.data[0].number;
-          const issueBody = steps.get_issues.outputs.data[0].body;
           const branchName = process.env.GITHUB_REF.replace('refs/heads/', '');
           const updatedBody = `${issueBody}\n\nBranch Name Created: ${branchName}`;
-          console.log(`::set-output name=issue_number::${issueNumber}`);
-          console.log(`::set-output name=updated_body::${updatedBody}`);
+          response=$(curl --location --request PATCH 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues/14' \
+          --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
+          --header 'Content-Type: text/plain' \
+          --data '{
+            "body": "UPDATED FROM GHA $branchName / "
+          }')
           
       - name: Update issue body with branch name created
         if: steps.get_issues.outputs.data.length > 0
