@@ -26,6 +26,9 @@ jobs:
           --header 'Content-Type: application/json')
           response_string=$(echo "$response" | jq -c .)
           echo $response_string
+          first_result=$(echo "$response" | jq '.[0]')
+          echo "Premier résultat : $first_result"
+          echo "issue_number.issue_number"
           number_of_results=$(echo "$response" | jq '. | length')
           echo "Number of results : $number_of_results"
           echo "response=$number_of_results" >> $GITHUB_OUTPUT
@@ -48,6 +51,7 @@ jobs:
               assignees: [context.actor],
               body: 'This is a new release backlog issue.'
             });
+            
       - name: Update existing issue with branch name if it exists
         if: steps.get_issues.outputs.data.length > 0
         run: |
@@ -57,6 +61,7 @@ jobs:
           const updatedBody = `${issueBody}\n\nBranch Name Created: ${branchName}`;
           console.log(`::set-output name=issue_number::${issueNumber}`);
           console.log(`::set-output name=updated_body::${updatedBody}`);
+          
       - name: Update issue body with branch name created
         if: steps.get_issues.outputs.data.length > 0
         uses: actions/github-script@v4
@@ -72,4 +77,3 @@ jobs:
               issue_number: parseInt(process.env.ISSUE_NUMBER),
               body: process.env.UPDATED_BODY
             });
-          
