@@ -26,7 +26,8 @@ jobs:
         --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
         --header 'Content-Type: application/json')
         response_string=$(echo "$response" | jq -c .)
-        
+        echo $response_string
+        echo "response=$response_string" >> $GITHUB_OUTPUT
 
     - name: Display number of results
       run: |
