@@ -25,7 +25,7 @@ jobs:
         response=$(curl --location --request GET 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
         --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
         --header 'Content-Type: application/json')
-        echo "::set-output name=response::$response"
+        echo "response=$response" >> $GITHUB_OUTPUT
 
     - name: Display number of results
       run: |
