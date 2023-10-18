@@ -29,15 +29,11 @@ jobs:
         echo $response_string
         number_of_results=$(echo "$response" | jq '. | length')
         echo "Number of results : $number_of_results"
-        echo "response=$response_string" >> $GITHUB_OUTPUT
+        echo "response=$number_of_results" >> $GITHUB_OUTPUT
 
     - name: Display number of results
       run: |
-        echo "${{ steps.curl_request.outputs.response }}"
+        echo "Resultats : ${{ steps.curl_request.outputs.response }}"
 
-    - name: Display number of results
-      run: |
-        echo "Number of results returned by the request:"
-        echo "${{ steps.curl_request.outputs.response }}" | jq '. | length'
 
 
