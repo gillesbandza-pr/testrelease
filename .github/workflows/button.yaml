@@ -6,24 +6,35 @@ jobs:
   do-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            const expireMillis = 1000 * 60 * 60 * 36;
-            const curtime = new Date().getTime();
-            const issues = await github.rest.issues.listForRepo({
-              repo: context.repo.repo,
-              state: 'open',
-              per_page: 100,
-              page: 1
-            });
-            for (const issue of issues.data.values()) {
-              console.log(issue.number);
-            }
-            
-      - name: Display number of issues found
-        run: |
-          echo "Number of issues found: ${{ steps.get_issues.outputs.data.length }}"
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Execute curl request
+      id: curl_request
+      run: |
+        response=$(curl --location --request GET 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
+        --header 'Authorization: Bearer toto' \
+        --header 'Content-Type: application/json' \
+        --data '{ 
+            "name": "BC_4_REVISION_VERSION", 
+            "value": "0"
+        }')
+        echo "::set-output name=response::$response"
+
+    - name: Display number of results
+      run: |
+        response=$ { { steps.curl_request.outputs.response } }
+        echo "Number of results : $ (echo $response | jq '. | length')"
 
 #for (const issue of issues.data.values()) {
 #  count = count + 1;
