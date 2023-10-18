@@ -16,7 +16,7 @@ jobs:
         release_id=${{ github.event.release.id }}
         
         # Mise à jour de la description de la release
-        curl -X PATCH -H "Authorization: token ${{ secrets.PGH_TOKEN }}" \
+        curl -X PATCH -H "Authorization: token ${{ env.GITHUB_TOKEN }}" \
           -d '{"body": "Hello world"}' \
           "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}"
       env:
