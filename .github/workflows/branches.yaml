@@ -13,11 +13,11 @@ jobs:
     - name: Vérifier l'issue "Release-Backlog"
       id: check-issue
       run: |
-        issue_number=$(gh issue list --title 'Release-Backlog' --json number --jq '.[] | .number')
+        issue_number=$(gh issue list --state open --label 'RELEASE_NOTE' --json number --jq '.[] | .number')
         if [ -z "$issue_number" ]; then
           echo "L'issue Release-Backlog n'existe pas. Création en cours..."
           issue_body="Backlog : $GITHUB_REF"
-          gh issue create --title 'Release-Backlog' --body "$issue_body"
+          gh issue create --title 'Release-Backlog' --body "$issue_body" --label 'RELEASE_NOTE'
         else
           echo "Mise à jour de l'issue Release-Backlog..."
           new_branch_name="$GITHUB_REF"
