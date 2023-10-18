@@ -57,7 +57,7 @@ jobs:
       - name: Update existing issue with branch name if it exists
         if: steps.get_issues.outputs.response > 0
         run: |
-          $(curl --location --request PATCH 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues/14' \
+          response=$(curl --location --request PATCH 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues/14' \
           --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
           --header 'Content-Type: text/plain' \
           --data '{
