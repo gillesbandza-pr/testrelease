@@ -13,13 +13,15 @@ jobs:
           github-token: ${{ secrets.PGH_TOKEN }}
           script: |
             count = 0;
-            const issues = await github.rest.issues.listForRepo.endpoint.merge({
-              repo: context.repo.repo,
-              state: 'open',
-              labels: ['RELEASE_NOTE']
-            });
-            console.log(issues);
-            console.log(issues.data);
+            
+            issues = await github.issues.list({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              labels: ["RELEASE_NOTE"]
+            })
+
+            # Afficher le nombre d'issues
+            print(issues.totalCount)
             
       - name: Display number of issues found
         run: |
