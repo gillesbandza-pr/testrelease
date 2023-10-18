@@ -33,13 +33,14 @@ jobs:
           number_of_results=$(echo "$response" | jq '. | length')
           echo "Number of results : $number_of_results"
           echo "response=$number_of_results" >> $GITHUB_OUTPUT
+          echo "issue_number=$number_of_first_result" >> $GITHUB_OUTPUT
           
       - name: Display number of issues found
         run: |
           echo "Number of issues found: ${{ steps.get_issues.outputs.response }}"
 
       - name: Create Release-Backlog issue if no open issue exists
-        if: steps.get_issues.outputs.data.length == 0
+        if: steps.get_issues.outputs.response == 0
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PGH_TOKEN }}
