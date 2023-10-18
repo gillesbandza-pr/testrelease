@@ -23,12 +23,8 @@ jobs:
       id: curl_request
       run: |
         response=$(curl --location --request GET 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
-        --header 'Authorization: Bearer toto' \
-        --header 'Content-Type: application/json' \
-        --data '{ 
-            "name": "BC_4_REVISION_VERSION", 
-            "value": "0"
-        }')
+        --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
+        --header 'Content-Type: application/json')
         echo "::set-output name=response::$response"
 
     - name: Display number of results
