@@ -1,0 +1,20 @@
+name: Vérifier si une issue au statut ouvert, ayant le label "RELEASE_NOTE" existe
+on:
+  workflow_dispatch:
+  
+jobs:
+  do-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get all open issues with label "RELEASE_NOTE"
+        id: get_issues
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.PGH_TOKEN }}
+          script: |
+            github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'RELEASE_NOTE'
+            });
