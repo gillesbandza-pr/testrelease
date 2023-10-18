@@ -22,7 +22,8 @@ jobs:
               labels: 'RELEASE_NOTE'
             });
             console.log(JSON.stringify(data));
-      - run: echo steps.get_issues.outputs.data
+            core.setOutput('data', JSON.stringify(data));
+      - run: echo $ {{steps.get_issues.outputs.data}}
       - name: Create Release-Backlog issue if no open issue exists
         if: steps.get_issues.outputs.data.length == 0
         uses: actions/github-script@v4
