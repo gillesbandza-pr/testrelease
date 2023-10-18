@@ -1,29 +1,41 @@
-name: Gérer les branches NAVBP
-
+name: Vérifier si une issue au statut ouvert, ayant le label "RELEASE_NOTE" existe
 on:
   push:
     branches:
-      - 'NAVBP*'
-
+      - 'NAVBP-*'
 jobs:
-  manage-branches:
+  check-release-note-issue:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Vérifier l'issue "Release-Backlog"
-      id: check-issue
-      env:
-        GITHUB_TOKEN: ${{ secrets.PGH_TOKEN }}
-      run: |
-        issue_number=$(gh issue list --state open --label 'RELEASE_NOTE' --json number --jq '.[] | .number')
-        if [ -z "$issue_number" ]; then
-          echo "L'issue Release-Backlog n'existe pas. Création en cours..."
-          issue_body="Backlog : $GITHUB_REF"
-          gh issue create --title 'Release-Backlog' --body "$issue_body" --label 'RELEASE_NOTE'
-        else
-          echo "Mise à jour de l'issue Release-Backlog..."
-          new_branch_name="$GITHUB_REF"
-          current_description=$(gh issue view $issue_number --json body --jq '.body')
-          updated_description="${current_description}\n${new_branch_name}"
-          gh issue edit $issue_number --body "$updated_description"
-        fi
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get all open issues with label "RELEASE_NOTE"
+        id: get_issues
+        uses: peter-evans/find-issues@v1.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          state: open
+          labels: RELEASE_NOTE
+      - name: Create Release-Backlog issue if no open issue exists
+        if: steps.get_issues.outputs.total_count == 0
+        uses: peter-evans/create-issue-from-file@v2.6.1
+        with:
+          title: Release-Backlog
+          labels: RELEASE_NOTE
+          assignees: ${{ github.actor }}
+          body-filepath: ./issue_template.md
+      - name: Update existing issue with branch name if it exists
+        if: steps.get_issues.outputs.total_count > 0
+        run: |
+          ISSUE_NUMBER=$(echo "${{ steps.get_issues.outputs.issues }}" | jq '.[0].number')
+          ISSUE_BODY=$(echo "${{ steps.get_issues.outputs.issues }}" | jq '.[0].body')
+          BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
+          UPDATED_BODY="${ISSUE_BODY}\n\nBranch Name Created: ${BRANCH_NAME}"
+          echo "::set-output name=issue_number::${ISSUE_NUMBER}"
+          echo "::set-output name=updated_body::${UPDATED_BODY}"
+      - name: Update issue body with branch name created
+        if: steps.get_issues.outputs.total_count > 0
+        uses: peter-evans/update-issue@v1.4.0
+        with:
+          issue-number: ${{ steps.check-release-note-issue.outputs.issue_number }}
+          body: ${{ steps.check-release-note-issue.outputs.updated_body }}
