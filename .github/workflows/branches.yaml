@@ -58,6 +58,7 @@ jobs:
         if: steps.get_issues.outputs.response > 0
         run: |
           branch_name=${GITHUB_REF##refs/heads/}
+          echo $branch_name
           response=$(curl --location --request PATCH 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues/14' \
           --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
           --header 'Content-Type: text/plain' \
