@@ -1,0 +1,23 @@
+name: Mise à jour de la description de la release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  update-release-description:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Mise à jour de la description de la release
+      run: |
+        # Récupérer le numéro de la release
+        release_id=${{ github.event.release.id }}
+        
+        # Mise à jour de la description de la release
+        curl -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d '{"body": "Hello world"}' \
+          "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
