@@ -19,9 +19,7 @@ jobs:
               repo: context.repo.name,
               labels: ["RELEASE_NOTE"]
             })
-
-            # Afficher le nombre d'issues
-            print(issues.totalCount)
+            console(issues.totalCount)
             
       - name: Display number of issues found
         run: |
