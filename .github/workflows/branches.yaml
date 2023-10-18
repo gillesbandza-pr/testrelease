@@ -11,30 +11,30 @@ jobs:
         uses: actions/checkout@v2
       - name: Get all open issues with label "RELEASE_NOTE"
         id: get_issues
-        uses: peter-evans/find-issues@v1.3.0
+        uses: peter-evans/wait-for-approval@v1.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          state: open
-          labels: RELEASE_NOTE
+          issue-labels: RELEASE_NOTE
       - name: Create Release-Backlog issue if no open issue exists
-        if: steps.get_issues.outputs.total_count == 0
-        uses: peter-evans/create-issue-from-file@v2
+        if: steps.get_issues.outputs.approved == 'true'
+        uses: peter-evans/create-issue@v2.6.1
         with:
           title: Release-Backlog
           labels: RELEASE_NOTE
           assignees: ${{ github.actor }}
-          body-filepath: ./issue_template.md
+          body: |
+            This is a new release backlog issue.
       - name: Update existing issue with branch name if it exists
-        if: steps.get_issues.outputs.total_count > 0
+        if: steps.get_issues.outputs.approved == 'true'
         run: |
-          ISSUE_NUMBER=$(echo "${{ steps.get_issues.outputs.issues }}" | jq '.[0].number')
-          ISSUE_BODY=$(echo "${{ steps.get_issues.outputs.issues }}" | jq '.[0].body')
+          ISSUE_NUMBER=$(echo "${{ steps.get_issues.outputs.issue }}" | jq '.[0].number')
+          ISSUE_BODY=$(echo "${{ steps.get_issues.outputs.issue }}" | jq '.[0].body')
           BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
           UPDATED_BODY="${ISSUE_BODY}\n\nBranch Name Created: ${BRANCH_NAME}"
           echo "::set-output name=issue_number::${ISSUE_NUMBER}"
           echo "::set-output name=updated_body::${UPDATED_BODY}"
       - name: Update issue body with branch name created
-        if: steps.get_issues.outputs.total_count > 0
+        if: steps.get_issues.outputs.approved == 'true'
         uses: peter-evans/update-issue@v1.4.0
         with:
           issue-number: ${{ steps.check-release-note-issue.outputs.issue_number }}
