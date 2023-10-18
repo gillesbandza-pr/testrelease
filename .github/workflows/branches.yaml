@@ -18,7 +18,7 @@ jobs:
           labels: RELEASE_NOTE
       - name: Create Release-Backlog issue if no open issue exists
         if: steps.get_issues.outputs.total_count == 0
-        uses: peter-evans/create-issue-from-file@v2.6.1
+        uses: peter-evans/create-issue-from-file@v2
         with:
           title: Release-Backlog
           labels: RELEASE_NOTE
