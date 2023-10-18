@@ -20,4 +20,4 @@ jobs:
           -d '{"body": "Hello world"}' \
           "https://api.github.com/repos/${{ github.repository }}/releases/${release_id}"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PGH_TOKEN }}
