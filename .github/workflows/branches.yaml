@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Vérifier l'issue "Release-Backlog"
       id: check-issue
+      env:
+        GITHUB_TOKEN: ${{ secrets.PGH_TOKEN }}
       run: |
         issue_number=$(gh issue list --state open --label 'RELEASE_NOTE' --json number --jq '.[] | .number')
         if [ -z "$issue_number" ]; then
@@ -25,5 +27,3 @@ jobs:
           updated_description="${current_description}\n${new_branch_name}"
           gh issue edit $issue_number --body "$updated_description"
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
