@@ -23,7 +23,12 @@ jobs:
             });
             console.log(JSON.stringify(data));
             core.setOutput('data', data);
-      - run: echo $ {{steps.get_issues.outputs.data}}
+      - name: Afficher le nombre d'issues
+        run: |
+          const data = JSON.parse('${{ steps.get_issues.outputs.data }}');
+          const numberOfIssues = data.length;
+          echo "Nombre d'issues trouvées : $numberOfIssues"
+
       - name: Create Release-Backlog issue if no open issue exists
         if: steps.get_issues.outputs.data.length == 0
         uses: actions/github-script@v4
