@@ -1,4 +1,4 @@
-name: Vérifier si une issue au statut ouvert, ayant le label "RELEASE_NOTE" existe
+name: Button
 on:
   workflow_dispatch:
   
