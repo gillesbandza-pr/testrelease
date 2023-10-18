@@ -20,9 +20,11 @@ jobs:
             });
             console.log(issues);
             console.log(issues.data);
-            #for (const issue of issues.data.values()) {
-            #  count = count + 1;
-            #}
+            
       - name: Display number of issues found
         run: |
           echo "Number of issues found: ${{ steps.get_issues.outputs.data.length }}"
+
+#for (const issue of issues.data.values()) {
+#  count = count + 1;
+#}
