@@ -27,8 +27,9 @@ jobs:
         --header 'Content-Type: application/json')
         echo "::set-output name=response::$response"
 
-    - name: Count results
+    - name: Display number of results
       run: |
-        echo "Number of results:"
-        echo "$response" | grep -c 'url'
+        echo "Number of results returned by the request:"
+        echo "${{ steps.curl_request.outputs.response }}" | jq '. | length'
+
 
