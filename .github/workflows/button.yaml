@@ -6,22 +6,20 @@ jobs:
   do-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Get all open issues with label "RELEASE_NOTE"
-        id: get_issues
-        uses: actions/github-script@v6
+      - uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.PGH_TOKEN }}
           script: |
-            count = 0;
-            const opts = github.rest.issues.listForRepo.endpoint.merge({
-              owner: context.repo.owner,
-              repo: context.repo.name
-            })
-            const issues = await github.paginate(opts);
-            for (const issue of issues) {
-              console.log("ok");
+            const expireMillis = 1000 * 60 * 60 * 36;
+            const curtime = new Date().getTime();
+            const issues = await github.rest.issues.listForRepo({
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+              page: 1
+            });
+            for (const issue of issues.data.values()) {
+              console.log(issue.number);
             }
-            
             
       - name: Display number of issues found
         run: |
