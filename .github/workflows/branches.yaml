@@ -1,0 +1,29 @@
+name: Gérer les branches NAVBP
+
+on:
+  push:
+    branches:
+      - 'NAVBP*'
+
+jobs:
+  manage-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Vérifier l'issue "Release-Backlog"
+      id: check-issue
+      run: |
+        issue_number=$(gh issue list --title 'Release-Backlog' --json number --jq '.[] | .number')
+        if [ -z "$issue_number" ]; then
+          echo "L'issue Release-Backlog n'existe pas. Création en cours..."
+          issue_body="Backlog : $GITHUB_REF"
+          gh issue create --title 'Release-Backlog' --body "$issue_body"
+        else
+          echo "Mise à jour de l'issue Release-Backlog..."
+          new_branch_name="$GITHUB_REF"
+          current_description=$(gh issue view $issue_number --json body --jq '.body')
+          updated_description="${current_description}\n${new_branch_name}"
+          gh issue edit $issue_number --body "$updated_description"
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
