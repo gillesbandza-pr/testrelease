@@ -33,7 +33,7 @@ jobs:
 
     - name: Display number of results
       run: |
-        response=$ { { steps.curl_request.outputs.response } }
+        response=${{ steps.curl_request.outputs.response }}
         echo "Number of results : $ (echo $response | jq '. | length')"
 
 #for (const issue of issues.data.values()) {
