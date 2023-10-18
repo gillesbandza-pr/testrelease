@@ -26,6 +26,7 @@ jobs:
         if: steps.get_issues.outputs.data.length == 0
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             await github.issues.create({
               owner: context.repo.owner,
@@ -35,7 +36,6 @@ jobs:
               assignees: [context.actor],
               body: 'This is a new release backlog issue.'
             });
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update existing issue with branch name if it exists
         if: steps.get_issues.outputs.data.length > 0
         run: |
