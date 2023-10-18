@@ -12,11 +12,14 @@ jobs:
         with:
           github-token: ${{ secrets.PGH_TOKEN }}
           script: |
-            github.rest.issues.listForRepo.endpoint.merge({
+            const opts = github.rest.issues.listForRepo.endpoint.merge({
               repo: context.repo.repo,
               state: 'open',
               labels: 'RELEASE_NOTE'
             });
+            const issues = await github.paginate(opts)
+            core.setOutput('data', issues);
+            
       - name: Display number of issues found
         run: |
           echo "Number of issues found: ${{ steps.get_issues.outputs.data.length }}"
