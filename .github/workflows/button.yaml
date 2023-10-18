@@ -13,15 +13,16 @@ jobs:
           github-token: ${{ secrets.PGH_TOKEN }}
           script: |
             count = 0;
-            
-            issues = await github.issues.list({
+            const opts = github.rest.issues.listForRepo.endpoint.merge({
               owner: context.repo.owner,
               repo: context.repo.name,
               labels: ["RELEASE_NOTE"]
             })
+            const issues = await github.paginate(opts);
             for (const issue of issues) {
-              console.log(issue.number)
+              console.log("ok");
             }
+            
             
       - name: Display number of issues found
         run: |
