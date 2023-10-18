@@ -17,6 +17,7 @@ jobs:
               state: 'open',
               labels: 'RELEASE_NOTE'
             });
+            const issues = await github.paginate(opts)
             
       - name: Display number of issues found
         run: |
