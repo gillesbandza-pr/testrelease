@@ -23,11 +23,9 @@ jobs:
             });
             console.log(JSON.stringify(data));
             core.setOutput('data', data);
-      - name: Afficher le nombre d'issues
+      - name: Display number of issues found
         run: |
-          const data = JSON.parse('${{ steps.get_issues.outputs.data }}');
-          const numberOfIssues = data.length;
-          echo "Nombre d'issues trouvées : $numberOfIssues"
+          echo "Number of issues found: ${{ steps.get_issues.outputs.data.length }}"
 
       - name: Create Release-Backlog issue if no open issue exists
         if: steps.get_issues.outputs.data.length == 0
