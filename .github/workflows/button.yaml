@@ -12,7 +12,7 @@ jobs:
         with:
           github-token: ${{ secrets.PGH_TOKEN }}
           script: |
-            const result = github.rest.issues.listForRepo.endpoint.merge({
+            const result = await github.rest.issues.listForRepo.endpoint.merge({
               repo: context.repo.repo,
               state: 'open',
               labels: ['RELEASE_NOTE']
