@@ -11,31 +11,52 @@ jobs:
         uses: actions/checkout@v2
       - name: Get all open issues with label "RELEASE_NOTE"
         id: get_issues
-        uses: peter-evans/wait-for-approval@v1.0.0
+        uses: actions/github-script@v4
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          issue-labels: RELEASE_NOTE
+          script: |
+            const { data } = await github.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'RELEASE_NOTE'
+            });
+            console.log(JSON.stringify(data));
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release-Backlog issue if no open issue exists
-        if: steps.get_issues.outputs.approved == 'true'
-        uses: peter-evans/create-issue@v2.6.1
+        if: steps.get_issues.outputs.data.length == 0
+        uses: actions/github-script@v4
         with:
-          title: Release-Backlog
-          labels: RELEASE_NOTE
-          assignees: ${{ github.actor }}
-          body: |
-            This is a new release backlog issue.
+          script: |
+            await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Release-Backlog',
+              labels: ['RELEASE_NOTE'],
+              assignees: [context.actor],
+              body: 'This is a new release backlog issue.'
+            });
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update existing issue with branch name if it exists
-        if: steps.get_issues.outputs.approved == 'true'
+        if: steps.get_issues.outputs.data.length > 0
         run: |
-          ISSUE_NUMBER=$(echo "${{ steps.get_issues.outputs.issue }}" | jq '.[0].number')
-          ISSUE_BODY=$(echo "${{ steps.get_issues.outputs.issue }}" | jq '.[0].body')
-          BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
-          UPDATED_BODY="${ISSUE_BODY}\n\nBranch Name Created: ${BRANCH_NAME}"
-          echo "::set-output name=issue_number::${ISSUE_NUMBER}"
-          echo "::set-output name=updated_body::${UPDATED_BODY}"
+          const issueNumber = steps.get_issues.outputs.data[0].number;
+          const issueBody = steps.get_issues.outputs.data[0].body;
+          const branchName = process.env.GITHUB_REF.replace('refs/heads/', '');
+          const updatedBody = `${issueBody}\n\nBranch Name Created: ${branchName}`;
+          console.log(`::set-output name=issue_number::${issueNumber}`);
+          console.log(`::set-output name=updated_body::${updatedBody}`);
       - name: Update issue body with branch name created
-        if: steps.get_issues.outputs.approved == 'true'
-        uses: peter-evans/update-issue@v1.4.0
+        if: steps.get_issues.outputs.data.length > 0
+        uses: actions/github-script@v4
         with:
-          issue-number: ${{ steps.check-release-note-issue.outputs.issue_number }}
-          body: ${{ steps.check-release-note-issue.outputs.updated_body }}
+          script: |
+            await github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(process.env.ISSUE_NUMBER),
+              body: process.env.UPDATED_BODY
+            });
+          env:
+            ISSUE_NUMBER: ${{ steps.check-release-note-issue.outputs.issue_number }}
+            UPDATED_BODY: ${{ steps.check-release-note-issue.outputs.updated_body }}
+          token: ${{ secrets.GITHUB_TOKEN }}
