@@ -13,6 +13,7 @@ jobs:
         id: get_issues
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.PGH_TOKEN }}
           script: |
             const { data } = await github.issues.listForRepo({
               owner: context.repo.owner,
@@ -21,7 +22,6 @@ jobs:
               labels: 'RELEASE_NOTE'
             });
             console.log(JSON.stringify(data));
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release-Backlog issue if no open issue exists
         if: steps.get_issues.outputs.data.length == 0
         uses: actions/github-script@v4
