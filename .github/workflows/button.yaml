@@ -19,7 +19,9 @@ jobs:
               repo: context.repo.name,
               labels: ["RELEASE_NOTE"]
             })
-            console(issues.totalCount)
+            for (const issue of issues) {
+              console.log(issue.number)
+            }
             
       - name: Display number of issues found
         run: |
