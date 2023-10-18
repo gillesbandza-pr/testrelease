@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Get all open issues with label "RELEASE_NOTE"
         id: get_issues
-        uses: actions/github-script@v4
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.PGH_TOKEN }}
           script: |
