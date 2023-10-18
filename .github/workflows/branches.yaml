@@ -9,23 +9,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+        
       - name: Get all open issues with label "RELEASE_NOTE"
         id: get_issues
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.PGH_TOKEN }}
-          script: |
-            const { data } = await github.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              labels: 'RELEASE_NOTE'
-            });
-            console.log(JSON.stringify(data));
-            core.setOutput('data', data);
+        run: |
+          response=$(curl --location --request GET 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
+          --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
+          --header 'Content-Type: application/json')
+          response_string=$(echo "$response" | jq -c .)
+          echo $response_string
+          number_of_results=$(echo "$response" | jq '. | length')
+          echo "Number of results : $number_of_results"
+          echo "response=$number_of_results" >> $GITHUB_OUTPUT
+          
       - name: Display number of issues found
         run: |
-          echo "Number of issues found: ${{ steps.get_issues.outputs.data.length }}"
+          echo "Number of issues found: ${{ steps.get_issues.outputs.response }}"
 
       - name: Create Release-Backlog issue if no open issue exists
         if: steps.get_issues.outputs.data.length == 0
