@@ -48,13 +48,14 @@ jobs:
         with:
           github-token: ${{ secrets.PGH_TOKEN }}
           script: |
+            const branchName = context.payload.ref.replace('refs/heads/', '');
             await github.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: 'Release-Backlog',
               labels: ['RELEASE_NOTE'],
               assignees: [context.actor],
-              body: 'This is a new release backlog issue.'
+              body: `This is a new release backlog issue for branch: ${branchName}.`
             });
             
       - name: Update existing issue with branch name if it exists
