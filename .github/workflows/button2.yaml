@@ -14,7 +14,7 @@ jobs:
       run: |
         owner='${{ github.repository_owner }}'
         repo="${{ github.repository }}"
-        response="$(curl --location --request GET 'https://api.github.com/repos/$owner/${{ github.repository }}/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
+        response="$(curl --location --request GET 'https://api.github.com/repos/${{ github.repository }}/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
         --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
         --header 'Content-Type: application/json')"
         first_result=$(echo "$response" | jq '.[0]')
