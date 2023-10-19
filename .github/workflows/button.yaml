@@ -9,7 +9,7 @@ jobs:
     - name: Mettre à jour le corps de la release
       uses: actions/github-script@v4
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.PGH_TOKEN }}
         script: |
           await github.repos.updateRelease({
             owner: context.repo.owner,
