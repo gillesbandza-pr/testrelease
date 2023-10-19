@@ -66,6 +66,6 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
           --header 'Content-Type: text/plain' \
           --data '{
-            "body": "'${{ steps.get_issues.outputs.issue_number }}' UPDATED FROM GHA - Branch: '$branch_name' / "
+            "body": "'${{ steps.get_issues.outputs.issue_body }}' UPDATED FROM GHA - Branch: '$branch_name' / "
           }')
 
