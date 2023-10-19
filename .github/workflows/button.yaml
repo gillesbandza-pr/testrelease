@@ -6,6 +6,12 @@ jobs:
   do-job:
     runs-on: ubuntu-latest
     steps:
+    - name: test
+      uses: wistefan/get-releases-by-semver@master
+      with:
+          include: "ALL"
+          repository: gillesbandza-pr/testrelease
+          minMinor: "2"
     - name: Mettre à jour le corps de la release
       uses: actions/github-script@v4
       with:
