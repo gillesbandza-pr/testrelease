@@ -32,6 +32,6 @@ jobs:
         --header 'Content-Type: text/plain' \
         --data '{
           "title": "CORE_DEV - BCentral deployment",
-          "body": "**v${MAJOR}.0.1090.0** of BCentral was successfully deployed 🚀 on your SaaS envirronments. Please have a look at the new feature implemented ASAP. Envjoy",
+          "body": "**v${{ env.MAJOR }}.0.1090.0** of BCentral was successfully deployed 🚀 on your SaaS envirronments. Please have a look at the new feature implemented ASAP. Envjoy",
           "assignees":["gillesbandza-pr"]
         }')"
