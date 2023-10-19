@@ -6,34 +6,11 @@ jobs:
   do-job:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Update release
+      uses: johnwbyrd/update-release@v1
       with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests
-
-    - name: Execute curl request
-      id: curl_request
-      run: |
-        response=$(curl --location --request GET 'https://api.github.com/repos/gillesbandza-pr/testrelease/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
-        --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
-        --header 'Content-Type: application/json')
-        response_string=$(echo "$response" | jq -c .)
-        echo $response_string
-        number_of_results=$(echo "$response" | jq '. | length')
-        echo "Number of results : $number_of_results"
-        echo "response=$number_of_results" >> $GITHUB_OUTPUT
-
-    - name: Display number of results
-      run: |
-        echo "Resultats : ${{ steps.curl_request.outputs.response }}"
+        token: ${{ secrets.PGH_TOKEN }}
+        body: "Wouhouuuuu"
 
 
 
