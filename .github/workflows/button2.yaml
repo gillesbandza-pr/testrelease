@@ -8,23 +8,34 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
-    - name: Get all open issues with label "RELEASE_NOTE"
-      id: get_issues
-      run: |
-        owner='${{ github.repository_owner }}'
-        repo="${{ github.repository }}"
-        response="$(curl --location --request GET 'https://api.github.com/repos/${{ github.repository }}/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
-        --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
-        --header 'Content-Type: application/json')"
-        first_result=$(echo "$response" | jq '.[0]')
-        number_of_first_result=$(echo "$first_result" | jq '.number')
-        echo "Number du premier résultat : $number_of_first_result"
-        body_of_first_result=$(echo "$first_result" | jq '.body')
-        echo "issue_body=$body_of_first_result" >> $GITHUB_OUTPUT
-        echo "issue_number=$number_of_first_result" >> $GITHUB_OUTPUT
 
-    - name: Close Issue
-      run: gh issue close --comment "Auto-closing issue" "${{ steps.get_issues.outputs.issue_number }}"
-      env:
-        GH_TOKEN: ${{ secrets.PGH_TOKEN }}
+    - name: Send notification of deployment
+      run: |
+        response="$(curl --location 'https://api.github.com/repos/${{ github.repository }}/issues' \
+        --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
+        --header 'Content-Type: text/plain' \
+        --data '{
+          "title": "CORE_DEV - BCentral deployment",
+          "body": "**v1.0.1090.0** of BCentral was successfully deployed 🚀 on your SaaS envirronments. Please have a look at the new feature implemented ASAP. Envjoy",
+          "assignees":["gillesbandza-pr"]
+        }')"
+    
+    #- name: Get all open issues with label "RELEASE_NOTE"
+    #  id: get_issues
+    #  run: |
+    #    owner='${{ github.repository_owner }}'
+    #    repo="${{ github.repository }}"
+    #    response="$(curl --location --request GET 'https://api.github.com/repos/${{ github.repository }}/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
+    #    --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
+    #    --header 'Content-Type: application/json')"
+    #    first_result=$(echo "$response" | jq '.[0]')
+    #    number_of_first_result=$(echo "$first_result" | jq '.number')
+    #    echo "Number du premier résultat : $number_of_first_result"
+    #    body_of_first_result=$(echo "$first_result" | jq '.body')
+    #    echo "issue_body=$body_of_first_result" >> $GITHUB_OUTPUT
+    #    echo "issue_number=$number_of_first_result" >> $GITHUB_OUTPUT
+
+    #- name: Close Issue
+    #  run: gh issue close --comment "Auto-closing issue" "${{ steps.get_issues.outputs.issue_number }}"
+    #  env:
+    #    GH_TOKEN: ${{ secrets.PGH_TOKEN }}
