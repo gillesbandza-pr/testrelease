@@ -6,12 +6,9 @@ jobs:
   do-job:
     runs-on: ubuntu-latest
     steps:
-    - name: test
-      uses: wistefan/get-releases-by-semver@master
-      with:
-          include: "ALL"
-          repository: gillesbandza-pr/testrelease
-          minMinor: "2"
+    - name: Checkout
+      uses: actions/checkout@v3
+      
     - name: Get all open issues with label "RELEASE_NOTE"
       id: get_issues
       run: |
