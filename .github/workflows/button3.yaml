@@ -24,12 +24,14 @@ jobs:
         
     - name: Send notification of deployment
       shell: bash
+      env:
+        MAJOR: ${{ vars.BC_1_MAJOR_VERSION }}
       run: |
         response="$(curl --location 'https://api.github.com/repos/${{ github.repository }}/issues' \
         --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
         --header 'Content-Type: text/plain' \
         --data '{
           "title": "CORE_DEV - BCentral deployment",
-          "body": "**v1.0.1090.0** of BCentral was successfully deployed 🚀 on your SaaS envirronments. Please have a look at the new feature implemented ASAP. Envjoy",
+          "body": "**v$MAJOR.0.1090.0** of BCentral was successfully deployed 🚀 on your SaaS envirronments. Please have a look at the new feature implemented ASAP. Envjoy",
           "assignees":["gillesbandza-pr"]
         }')"
