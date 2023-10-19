@@ -6,12 +6,17 @@ jobs:
   do-job:
     runs-on: ubuntu-latest
     steps:
-    - name: Update release
-      uses: johnwbyrd/update-release@v1.0.0
+    - name: Mettre à jour le corps de la release
+      uses: actions/github-script@v4
       with:
-        token: ${{ secrets.PGH_TOKEN }}
-        tag: v0.4
-        body: "Wouhouuuuu"
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          await github.repos.updateRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: 125555777,
+            body: "fdsdfsdfsdfds",
+          });
 
 
 
