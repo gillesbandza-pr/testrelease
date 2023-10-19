@@ -1,0 +1,26 @@
+name: Button2
+on:
+  workflow_dispatch:
+  
+jobs:
+  do-job:
+    runs-on: ubuntu-latest
+    steps:
+    - name: test
+      uses: wistefan/get-releases-by-semver@master
+      with:
+          include: "ALL"
+          repository: gillesbandza-pr/testrelease
+          minMinor: "2"
+    - name: Get all open issues with label "RELEASE_NOTE"
+      id: get_issues
+      run: |
+        owner="${{ github.repository_owner }}"
+        repo="${{ github.repository }}"
+        response=$(curl --location --request GET 'https://api.github.com/repos/$owner/$repo/issues?state=open&labels=RELEASE_NOTE&per_page=100&page=1' \
+        --header 'Authorization: Bearer ${{ secrets.PGH_TOKEN }}' \
+        --header 'Content-Type: application/json')
+        first_result=$(echo "$response" | jq '.[0]')
+        body_of_first_result=$(echo "$first_result" | jq '.body')
+        echo "issue_body=$body_of_first_result" >> $GITHUB_OUTPUT
+
