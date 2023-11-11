@@ -1,28 +1,25 @@
-name: Button
+name: Mon Workflow
+
 on:
   workflow_dispatch:
-  
+    inputs:
+      choix:
+        description: 'Choisissez une valeur : linux, cordova, apple, windows, home, town, all of them'
+        required: true
+
 jobs:
-  do-job:
+  prepare:
     runs-on: ubuntu-latest
     steps:
-    - name: test
-      uses: wistefan/get-releases-by-semver@master
-      with:
-          include: "ALL"
-          repository: gillesbandza-pr/testrelease
-          minMinor: "2"
-    - name: Mettre à jour le corps de la release
-      uses: actions/github-script@v4
-      with:
-        github-token: ${{ secrets.PGH_TOKEN }}
-        script: |
-          await github.repos.updateRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: 125555777,
-            body: "fdsdfsdfsdfds",
-          });
+      - name: Afficher le message
+        run: echo "Hello, world!"
 
-
-
+  run:
+    needs: prepare
+    strategy:
+      matrix:
+        item: ${{fromJson(github.event.inputs.choix == 'all of them' ? '[\"linux\", \"cordova\", \"apple\", \"windows\", \"home\", \"town\"]' : '[\"' + github.event.inputs.choix + '\"]')}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Afficher l'item de la matrice
+        run: echo "Item de la matrice : ${{ matrix.item }}"
