@@ -27,7 +27,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        item: ${{ github.repository == 'all of them' && '[\"linux\", \"cordova\"]' || '[\"bebe\", \"gfgf\"]' }}
+        item: ${{ github.repository == 'all of them' && '["linux", "cordova"]' || '["bebe", "gfgf"]' }}
     runs-on: ubuntu-latest
     steps:
       - name: Afficher l'item de la matrice
