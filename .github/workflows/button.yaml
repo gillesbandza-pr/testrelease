@@ -5,7 +5,7 @@ on:
     inputs:
       choix:
         type: choice
-        description: 'Choisissez une valeur : linux, cordova, apple, windows, home, town, all of them'
+        description: 'Choisissez une valeur : '
         options:
           - linux
           - cordova
@@ -27,7 +27,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        item: ${{ fromJson(github.event.inputs.choix == 'all of them' && '["linux", "cordova"]' || '["bebe", "gfgf"]') }}
+        item: ${{ fromJson(github.event.inputs.choix == 'all of them' && '["linux", "cordova", "apple", "windows", "home", "town"]' || '["bebe"]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Afficher l'item de la matrice
