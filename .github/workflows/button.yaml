@@ -27,7 +27,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        item: ${{ github.repository == 'all of them' && "self-hosted" || "ubuntu-latest" }}
+        item: ${{ github.repository == 'all of them' && [ a, b, c ] || [d, e] }}
     runs-on: ubuntu-latest
     steps:
       - name: Afficher l'item de la matrice
