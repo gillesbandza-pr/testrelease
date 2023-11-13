@@ -27,7 +27,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        item: ${{ fromJson(github.event.inputs.choix == 'all of them' && '["linux", "cordova", "apple", "windows", "home", "town"]' || '["bebe"]') }}
+        item: ${{ fromJson(github.event.inputs.choix == 'all of them' && '["linux", "cordova", "apple", "windows", "home", "town"]' || '["'+ github.event.inputs.choix +'"]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Afficher l'item de la matrice
