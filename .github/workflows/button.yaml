@@ -18,7 +18,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        item: ${{fromJson(github.event.inputs.choix == 'all of them' && '[\"linux\", \"cordova\", \"apple\", \"windows\", \"home\", \"town\"]' || '[\"' + github.event.inputs.choix + '\"]')}}
+        item: ${{ github.repository == 'all of them' && "self-hosted" || "ubuntu-latest" }}
     runs-on: ubuntu-latest
     steps:
       - name: Afficher l'item de la matrice
