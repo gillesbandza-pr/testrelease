@@ -4,7 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       choix:
+        type: choice
         description: 'Choisissez une valeur : linux, cordova, apple, windows, home, town, all of them'
+        options:
+          - linux
+          - cordova
+          - apple
+          - windows
+          - home
+          - town
+          - all of them
         required: true
 
 jobs:
